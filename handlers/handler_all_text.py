@@ -1,4 +1,5 @@
 import json
+from os import path
 # импортируем настройки и утилиты
 from settings import config, utility
 # импортируем ответ пользователю
@@ -7,6 +8,8 @@ from settings.message import MESSAGES
 from handlers.handler import Handler
 from models.user import User
 from models.order_trading import TraderUser
+from reports.reports import ReportInvoice
+
 
 class HandlerAllText(Handler):
     """
@@ -181,9 +184,9 @@ class HandlerAllText(Handler):
                                       reply_markup=self.keybords.set_select_client(trader=trader_user))
                 message_text = 'Выбор адресата'
             else:
-                trader_user.order.status(status=config.Status.Work)
-                trader_user.order.save(self.BD)
-                trader_user.order_items.current_clear(self.BD)
+                self._perform_order(trader_user)
+                self._perform_invoice(trader_user)
+                self._send_invoice(trader_user.order.id, message.chat.id)
                 message_text = MESSAGES['apply'].format(trader_user.order_items.total_price(self.BD),
                                                         trader_user.order_items.number_items)
         else:
@@ -210,6 +213,49 @@ class HandlerAllText(Handler):
                                                        order_item.quantity),
                               parse_mode="HTML",                                          
                               reply_markup=self.keybords.orders_menu(step=json.dumps(step)))
+
+    def _perform_order(self, trader: TraderUser):
+        """
+        perform order - clear current items, set next status Work
+        :param trader:
+        :return:
+        """
+        trader.order.status(status=config.Status.Work)
+        trader.order.save(self.BD)
+        trader.order_items.current_clear(self.BD)
+
+    def _perform_invoice(self, trader: TraderUser):
+        """
+        perform invoice PDF file in directory invoices
+        :param trader:
+        :return:
+        """
+        if config.is_company_info():
+            info = config.company_info()
+            invoice = ReportInvoice()
+            invoice.company_info(info)
+            client = self.BD.get_client(trader.order.get_client())
+            invoice.set_order(date=trader.order.date, number=trader.order.id,
+                              payer=client.title, address=client.address,
+                              delivery=trader.order.delivery_cost(db=self.BD))
+            for item in trader.order_items:
+                product = self.BD.select_single_product(item.product_id)
+                invoice.add_item(name=product.name, code=product.title, unit='шт.',
+                                 quantity=item.quantity, price=product.price)
+            invoice.make()
+
+    def _send_invoice(self, order_id, chat_id):
+        """
+        send invoice file if it exists
+        :param order_id:
+        :param chat_id:
+        :return:
+        """
+        # check if invoice done
+        file_name = ReportInvoice.invoice_file(order_id)
+        if path.exists(file_name):
+            # send invoice
+            self.bot.send_document(chat_id=chat_id, data=open(file_name, 'rb'))
 
     # -------------------------- end of working with order form --------------------------------------
 
@@ -247,9 +293,19 @@ class HandlerAllText(Handler):
         user = self.BD.get_user(chat_id=message.chat.id)
         return TraderUser(user.id, message.from_user.first_name)
 
+    def _add_admin(self, message):
+        """
+        add new user with role 'Admin'
+        :param message:
+        :return:
+        """
+        user = User(chat_id=message.chat.id, role=config.Role.Admin)
+        self.BD.save_element(user)
+        self.bot.send_message(message.chat.id, 'Приятной работы', reply_markup=self.keybords.admin_menu())
+
     def handle(self):
         # обработчик(декоратор) сообщений, который обрабатывает входящие текстовые сообщения от нажатия кнопок.
-        @self.bot.message_handler(func=lambda message: True)
+        @self.bot.message_handler(func=lambda message: message.text in config.KEYBOARD.values())
         def handle(message):
             # ********** меню (выбор роли)                          **********
             if message.text == config.KEYBOARD['TRADER']:
@@ -257,7 +313,7 @@ class HandlerAllText(Handler):
             if message.text == config.KEYBOARD['KEEPER']:
                 pass
             if message.text == config.KEYBOARD['ADMIN']:
-                pass
+                self._add_admin(message)
 
             # ********** меню (выбор категории, настройки, сведения)**********
             if message.text == config.KEYBOARD['CHOOSE_ORDER']:
@@ -314,5 +370,5 @@ class HandlerAllText(Handler):
             if message.text == config.KEYBOARD['APPLY']:
                 self.pressed_btn_apply(message)
             # иные нажатия и ввод данных пользователем
-            else:
-                self.bot.send_message(message.chat.id, message.text)
+            # else:
+            #     self.bot.send_message(message.chat.id, message.text)
