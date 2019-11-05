@@ -1,10 +1,11 @@
 <p align="center"><img src="bot_ava/bot_ava.png" width="300" height="300"></p>
 
 <p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
+<a href="https://github.com/TradingStoreBot/TradingStoreBot"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+<a href="https://github.com/TradingStoreBot/TradingStoreBot/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/TradingStoreBot/TradingStoreBot"></a>
+<a href="https://github.com/TradingStoreBot/TradingStoreBot/network"><img alt="GitHub forks" src="https://img.shields.io/github/forks/TradingStoreBot/TradingStoreBot"></a>
+<a href="https://github.com/TradingStoreBot/TradingStoreBot/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/TradingStoreBot/TradingStoreBot"></a>
+<a href="https://github.com/TradingStoreBot/TradingStoreBot/blob/master/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/TradingStoreBot/TradingStoreBot"></a>
 </p>
 
 ------------
