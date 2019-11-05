@@ -7,8 +7,7 @@
 <a href="https://github.com/TradingStoreBot/TradingStoreBot/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/TradingStoreBot/TradingStoreBot"></a>
 <a href="https://github.com/TradingStoreBot/TradingStoreBot/blob/master/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/TradingStoreBot/TradingStoreBot"></a>
 </p>
-<a href="https://github.com/TradingStoreBot/TradingStoreBot/blob/master/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/TradingStoreBot/TradingStoreBot"></a>
-------------
+
 
 > Чат-боты – это некий помощник, который общается с пользователями посредством сообщений и обладает множеством специфичных функций. Чат - бота можно использовать как для рассылки информации, так и для ее сбора. На сегодняшний день мессенджеры пользуются большим спросом, это связано c изменением в области мобильного интернета: высокие скорости, низкая цена и широкое распространение смартфонов. Прогрессивность мессенджеров можно сравнить с явлением десятилетней давности – взрывом социальных медиа. Уже сейчас приложениями для обмена сообщениями пользуются 2 миллиарда человек, и если верить прогнозам, к 2021 году число пользователей увеличится до 2,48 миллиардов.Чат-боты – это некий помощник, который общается с пользователями посредством сообщений и обладает множеством специфичных функций. Чат - бота можно использовать как для рассылки информации, так и для ее сбора. 
 
