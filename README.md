@@ -1,4 +1,4 @@
-<p align="center"><img src="github-images/surveymebot.jpg" width="200" height="200"></p>
+<p align="center"><img src="TradingStoreBot/github-images/surveymebot.jpg" width="200" height="200"></p>
 
 <p align="center">
 <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
