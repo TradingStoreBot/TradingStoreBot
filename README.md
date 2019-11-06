@@ -1,4 +1,4 @@
-<p align="center"><img src="bot_ava/bot_ava.png" width="300" height="300"></p>
+<p align="center"><img src="bot_ava/bot.jpg" width="300" height="300"></p>
 
 <p align="center">
 <a href="https://github.com/TradingStoreBot/TradingStoreBot"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
