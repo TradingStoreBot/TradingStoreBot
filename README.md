@@ -91,9 +91,9 @@ Webhooks работают несколько иначе. Под установк
 - сформированный заказ направляется в БД (таблицу заказа) → на сервер TelBot →
 кладовщику
 
-<p align="center"><img src="img_md/SC_t_1.jpg" width="250" height="400"></p>
-<p align="center"><img src="img_md/SC_t_2.jpg" width="250" height="400"></p>
-<p align="center"><img src="img_md/SC_t_7.jpg" width="250" height="400"></p>
+<p align="center"><img src="img_md/SC_t_1.jpg" width="250" height="400">
+<img src="img_md/SC_t_2.jpg" width="250" height="400">
+<img src="img_md/SC_t_7.jpg" width="250" height="400"></p>
 
 ### **кладовщик**
 
