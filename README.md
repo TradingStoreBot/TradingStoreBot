@@ -1,6 +1,6 @@
-<p align="center">
+<center>
 
-<img src="img_md/bot.jpg" width="300" height="300">
+<p align="center"><img src="img_md/bot.jpg" width="300" height="300"></p>
 
 [![GitHub issues](https://img.shields.io/github/issues/TradingStoreBot/TradingStoreBot)](https://github.com/TradingStoreBot/TradingStoreBot/issues)
 [![GitHub license](https://img.shields.io/github/license/TradingStoreBot/TradingStoreBot)](https://github.com/TradingStoreBot/TradingStoreBot/blob/master/LICENSE)
@@ -10,7 +10,7 @@
 ![GitHub watchers](https://img.shields.io/github/watchers/TradingStoreBot/TradingStoreBot?style=social)
 
 
-</p>
+</center>
 
 ## Оглавление
 
