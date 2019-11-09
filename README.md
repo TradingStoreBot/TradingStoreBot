@@ -1,5 +1,6 @@
 <p align="center"><img src="img_md/bot.jpg" width="300" height="300"></p>
 <p align="center">
+    
 [![GitHub issues](https://img.shields.io/github/issues/TradingStoreBot/TradingStoreBot)](https://github.com/TradingStoreBot/TradingStoreBot/issues)
 [![GitHub license](https://img.shields.io/github/license/TradingStoreBot/TradingStoreBot)](https://github.com/TradingStoreBot/TradingStoreBot/blob/master/LICENSE)
 [![GitHub forks](https://img.shields.io/github/forks/TradingStoreBot/TradingStoreBot)](https://github.com/TradingStoreBot/TradingStoreBot/network)
