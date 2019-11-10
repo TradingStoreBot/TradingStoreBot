@@ -1,5 +1,4 @@
 import json
-from os import path
 # импортируем настройки и утилиты
 from settings import config
 # импортируем ответ пользователю
@@ -9,7 +8,6 @@ from handlers.handler import Handler
 from models.default_user import DefaultUser
 from models.user import User
 from models.order_trading import TraderUser
-from reports.reports import ReportInvoice
 
 
 class HandlerAllText(Handler):
