@@ -1,0 +1,6 @@
+emoji
+geopy
+pyTelegramBotAPI
+reportlab
+SQLAlchemy
+

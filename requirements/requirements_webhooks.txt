@@ -1,0 +1,8 @@
+emoji
+geopy
+pyTelegramBotAPI
+reportlab
+SQLAlchemy
+Flask
+Flask-SSLify
+
