@@ -78,7 +78,8 @@ class DBManager(metaclass=Singleton):
         session.close()
 
     def _set_client(self, session):
-        client = Client(address='Москва', chat_id=0, email='tradingstorebot@gmail.com',
+        email_config = config.get_email_config()
+        client = Client(address='Москва', chat_id=0, email=email_config['SENDER_EMAIL'],
                         latitude=55.899121, longitude=37.426408, phone='',
                         title='ИП Иванов А.И.', user_name='ivan_ai')
         session.add(client)
