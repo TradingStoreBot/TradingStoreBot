@@ -77,6 +77,26 @@ class DBManager(metaclass=Singleton):
         session.commit()
         session.close()
 
+    def _set_client(self, session):
+        client = Client(address='Москва', chat_id=0, email='tradingstorebot@gmail.com',
+                        latitude=55.899121, longitude=37.426408, phone='',
+                        title='ИП Иванов А.И.', user_name='ivan_ai')
+        session.add(client)
+
+    def _set_store(self, session):
+        store = Store(address='Москва, Химки', latitude=55.906430, longitude=37.459161,
+                      price_km=50.0, title='Склад №1')
+        session.add(store)
+
+    def check_clients(self):
+        clients = self.get_clients()
+        if clients is None:
+            session = self.__session()
+            self._set_client(session)
+            self._set_store(session)
+            session.commit()
+            session.close()
+
     def select_single_product(self, rownum):
         """ 
         Возвращает одну строку товара с номером rownum 
@@ -424,9 +444,14 @@ class DBManager(metaclass=Singleton):
         :return result: all clients query list
         """
         session = self.__session()
-        result = session.query(Client).all()
-        session.close()
-        return result
+        try:
+            result = session.query(Client).all()
+            session.close()
+            return result
+        except Exception as e:
+            print(e)
+            session.close()
+            return None
 
     def get_client(self, client_id):
         session = self.__session()

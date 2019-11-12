@@ -179,6 +179,8 @@ class HandlerAllText(Handler):
         if trader_user.order_items.number_positions > 0:
             # отправляем ответ пользователю
             if not trader_user.order.has_client():
+                # check clients in db, if not then set test data
+                self.BD.check_clients()
                 self.bot.send_message(message.chat.id,
                                       'Укажите адресата доставки заказа:',
                                       reply_markup=self.keybords.set_select_client(trader=trader_user))
