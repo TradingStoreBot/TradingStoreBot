@@ -80,18 +80,30 @@ class DBManager(metaclass=Singleton):
     def _set_client(self, session):
         email_config = config.get_email_config()
         client = Client(address='Москва', chat_id=0, email=email_config['SENDER_EMAIL'],
+<<<<<<< HEAD
                         latitude=55.743511, longitude=37.490200, phone='',
+=======
+                        latitude=55.899121, longitude=37.426408, phone='',
+>>>>>>> 9a6a1382888dd6742c2de354f894d28d69fd7d3a
                         title='ИП Иванов А.И.', user_name='ivan_ai')
         session.add(client)
 
     def _set_store(self, session):
+<<<<<<< HEAD
         store = Store(address='Москва, Химки', latitude=55.892811, longitude=37.448085,
+=======
+        store = Store(address='Москва, Химки', latitude=55.906430, longitude=37.459161,
+>>>>>>> 9a6a1382888dd6742c2de354f894d28d69fd7d3a
                       price_km=50.0, title='Склад №1')
         session.add(store)
 
     def check_clients(self):
         clients = self.get_clients()
+<<<<<<< HEAD
         if not clients:
+=======
+        if clients is None:
+>>>>>>> 9a6a1382888dd6742c2de354f894d28d69fd7d3a
             session = self.__session()
             self._set_client(session)
             self._set_store(session)
@@ -452,6 +464,10 @@ class DBManager(metaclass=Singleton):
         except Exception as e:
             print(e)
             session.close()
+<<<<<<< HEAD
+=======
+            return None
+>>>>>>> 9a6a1382888dd6742c2de354f894d28d69fd7d3a
 
     def get_client(self, client_id):
         session = self.__session()
