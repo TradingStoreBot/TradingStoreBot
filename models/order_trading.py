@@ -142,11 +142,13 @@ class OrderItems:
             if order.is_current:
                 break
         else:
-            product_id = list(self._orders.keys())[0]
-            order = self._orders[product_id]
-            order.is_current = True
-            order.save(db)
-        return order
+            products = list(self._orders.keys())
+            if products:
+                product_id = products[0]
+                order = self._orders[product_id]
+                order.is_current = True
+                order.save(db)
+                return order
 
     def current_next(self, db: DBManager):
         """
