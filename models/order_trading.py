@@ -140,7 +140,7 @@ class OrderItems:
         """
         for order in self._orders.values():
             if order.is_current:
-                break
+                return order
         else:
             products = list(self._orders.keys())
             if products:
