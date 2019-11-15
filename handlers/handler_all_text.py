@@ -1,12 +1,14 @@
 import json
 # импортируем настройки и утилиты
-from settings import config, utility
+from settings import config
 # импортируем ответ пользователю
 from settings.message import MESSAGES
 # импортируем класс родитель
 from handlers.handler import Handler
+from models.default_user import DefaultUser
 from models.user import User
 from models.order_trading import TraderUser
+
 
 class HandlerAllText(Handler):
     """
@@ -30,17 +32,17 @@ class HandlerAllText(Handler):
         """
         обрабатывает входящие текстовые сообщения от нажатия на кнопоку TradingStore.
         """
-        self.bot.send_message(message.chat.id,MESSAGES['trading_store'],
-                                          parse_mode="HTML",
-                                          reply_markup=self.keybords.info_menu())
+        self.bot.send_message(message.chat.id, MESSAGES['trading_store'],
+                              parse_mode="HTML",
+                              reply_markup=self.keybords.info_menu())
 
     def pressed_btn_settings(self, message):
         """
         обрабатывает входящие текстовые сообщения от нажатия на кнопоку settings.
         """
-        self.bot.send_message(message.chat.id,MESSAGES['settings'],
-                                          parse_mode="HTML",
-                                          reply_markup=self.keybords.settings_menu())
+        self.bot.send_message(message.chat.id, MESSAGES['settings'],
+                              parse_mode="HTML",
+                              reply_markup=self.keybords.settings_menu())
 
     def pressed_btn_product(self, message, product):
         """
@@ -48,11 +50,12 @@ class HandlerAllText(Handler):
         """
         trader_user = self._get_current_trader(message)
         self.bot.send_message(message.chat.id, 'Категория ' + config.KEYBOARD[product],
-                              reply_markup=self.keybords.set_select_category(trader=trader_user,
-                                                                             category=config.CATEGORY[product]))
+                              reply_markup=\
+                              self.keybords.set_select_category(trader=trader_user,
+                                                                category=config.CATEGORY[product]))
         self.bot.send_message(message.chat.id, "Ок",
                               reply_markup=self.keybords.category_menu())
-    
+
     def pressed_btn_back(self, message):
         """
         обрабатывает входящие текстовые сообщения от нажатия на кнопку back.
@@ -66,56 +69,59 @@ class HandlerAllText(Handler):
         обрабатывает входящие текстовые сообщения от нажатия на кнопку order - start work with it
         """
         trader_user = self._get_current_trader(message)
-        trader_user.load_current(db=self.BD)
-        if trader_user.order_items.number_positions > 0:
-            # current order has a order positions
-            # get current order item, set current first if there is no current order
-            order_item = trader_user.order_items.current_get(db=self.BD)
-            # send the message - fill the form
-            self.send_message_order(message, order_item, trader_user)
-        else:
-            # current order has not a positions
-            self.bot.send_message(message.chat.id, MESSAGES['no_orders'],
-                                  parse_mode="HTML",
-                                  reply_markup=self.keybords.category_menu())
+        if not trader_user is None:
+            trader_user.load_current(db=self.BD)
+            if trader_user.order_items.number_positions > 0:
+                # current order has a order positions
+                # get current order item, set current first if there is no current order
+                order_item = trader_user.order_items.current_get(db=self.BD)
+                # send the message - fill the form
+                self.send_message_order(message, order_item, trader_user)
+            else:
+                # current order has not a positions
+                self.bot.send_message(message.chat.id, MESSAGES['no_orders'],
+                                      parse_mode="HTML",
+                                      reply_markup=self.keybords.category_menu())
 
     def pressed_btn_back_step(self, message):
         """
         обрабатывает входящие текстовые сообщения от нажатия на кнопку back_step.
         """
         trader_user = self._get_current_trader(message)
-        trader_user.load_current(db=self.BD)
-        if trader_user.order_items.number_positions > 0:
-            # current order has a order positions
-            # get previous order item
-            order_item = trader_user.order_items.current_prev(db=self.BD)
-            # send the message - fill the form
-            if not order_item is None:
-                self.send_message_order(message, order_item, trader_user)
-        else:
-            # current order has not a positions
-            self.bot.send_message(message.chat.id, MESSAGES['no_orders'],
-                                  parse_mode="HTML",
-                                  reply_markup=self.keybords.category_menu())
-    
+        if not trader_user is None:
+            trader_user.load_current(db=self.BD)
+            if trader_user.order_items.number_positions > 0:
+                # current order has a order positions
+                # get previous order item
+                order_item = trader_user.order_items.current_prev(db=self.BD)
+                # send the message - fill the form
+                if not order_item is None:
+                    self.send_message_order(message, order_item, trader_user)
+            else:
+                # current order has not a positions
+                self.bot.send_message(message.chat.id, MESSAGES['no_orders'],
+                                      parse_mode="HTML",
+                                      reply_markup=self.keybords.category_menu())
+
     def pressed_btn_next_step(self, message):
         """
         обрабатывает входящие текстовые сообщения от нажатия на кнопку next_step.
         """
         trader_user = self._get_current_trader(message)
-        trader_user.load_current(db=self.BD)
-        if trader_user.order_items.number_positions > 0:
-            # current order has a order positions
-            # get next order item
-            order_item = trader_user.order_items.current_next(db=self.BD)
-            # send the message - fill the form
-            if not order_item is None:
-                self.send_message_order(message, order_item, trader_user)
-        else:
-            # current order has not a positions
-            self.bot.send_message(message.chat.id, MESSAGES['no_orders'],
-                                  parse_mode="HTML",
-                                  reply_markup=self.keybords.category_menu())
+        if not trader_user is None:
+            trader_user.load_current(db=self.BD)
+            if trader_user.order_items.number_positions > 0:
+                # current order has a order positions
+                # get next order item
+                order_item = trader_user.order_items.current_next(db=self.BD)
+                # send the message - fill the form
+                if not order_item is None:
+                    self.send_message_order(message, order_item, trader_user)
+            else:
+                # current order has not a positions
+                self.bot.send_message(message.chat.id, MESSAGES['no_orders'],
+                                      parse_mode="HTML",
+                                      reply_markup=self.keybords.category_menu())
 
     def pressed_btn_down(self, message):
         """
@@ -123,25 +129,30 @@ class HandlerAllText(Handler):
         """
         # получаем список всех товаров в заказе
         trader_user = self._get_current_trader(message)
-        trader_user.load_current(db=self.BD)
-        # получаем количество конкретной позиции в заказе
-        order_item = trader_user.order_items.current_get(db=self.BD)
-        trader_user.dec_item(db=self.BD, product_id=order_item.product_id)
-        # отправляем ответ пользователю
-        self.send_message_order(message, order_item, trader_user)
-    
+        if not trader_user is None:
+            trader_user.load_current(db=self.BD)
+            # получаем количество конкретной позиции в заказе
+            if trader_user.order_items.number_positions:
+                order_item = trader_user.order_items.current_get(db=self.BD)
+                trader_user.dec_item(db=self.BD, product_id=order_item.product_id)
+                # отправляем ответ пользователю
+                self.send_message_order(message, order_item, trader_user)
+
     def pressed_btn_up(self, message):
         """
         обрабатывает входящие текстовые сообщения от нажатия на кнопку up.
         """
         # получаем список всех товаров в заказе
         trader_user = self._get_current_trader(message)
-        trader_user.load_current(db=self.BD)
-        # получаем количество конкретной позиции в заказе
-        order_item = trader_user.order_items.current_get(db=self.BD)
-        trader_user.add_item(db=self.BD, product_id=order_item.product_id)
-        # отправляем ответ пользователю
-        self.send_message_order(message, order_item, trader_user)
+        if not trader_user is None:
+            trader_user.load_current(db=self.BD)
+            number_items = trader_user.order_items.number_items
+            if number_items > 0:
+                # получаем количество конкретной позиции в заказе
+                order_item = trader_user.order_items.current_get(db=self.BD)
+                trader_user.add_item(db=self.BD, product_id=order_item.product_id)
+                # отправляем ответ пользователю
+                self.send_message_order(message, order_item, trader_user)
 
     def pressed_btn_x(self, message):
         """
@@ -150,22 +161,25 @@ class HandlerAllText(Handler):
         # получаем список всех product_id заказа
         # count = self.BD.select_all_product_id()
         trader_user = self._get_current_trader(message)
-        trader_user.load_current(db=self.BD)
-        # если список не пуст
-        order_item = trader_user.order_items.current_get(db=self.BD)
-        trader_user.del_item(db=self.BD, product_id=order_item.product_id)
-        # если список не пуст
-        if trader_user.order_items.number_positions > 0:
-            # отправляем пользователю сообщение
-            order_item = trader_user.order_items.current_get(db=self.BD)
-            # send the message - fill the form
-            self.send_message_order(message, order_item, trader_user)
-        else:
-            # если товара нет в заказе отправляем сообщение
-            self.bot.send_message(message.chat.id,MESSAGES['no_orders'],
-                                  parse_mode="HTML",
-                                  reply_markup=self.keybords.category_menu())
-    
+        if not trader_user is None:
+            trader_user.load_current(db=self.BD)
+            # если список не пуст
+            number_items = trader_user.order_items.number_items
+            if number_items > 0:
+                order_item = trader_user.order_items.current_get(db=self.BD)
+                trader_user.del_item(db=self.BD, product_id=order_item.product_id)
+                # если список не пуст
+                if trader_user.order_items.number_positions > 0:
+                    # отправляем пользователю сообщение
+                    order_item = trader_user.order_items.current_get(db=self.BD)
+                    # send the message - fill the form
+                    self.send_message_order(message, order_item, trader_user)
+                else:
+                    # если товара нет в заказе отправляем сообщение
+                    self.bot.send_message(message.chat.id, MESSAGES['no_orders'],
+                                          parse_mode="HTML",
+                                          reply_markup=self.keybords.category_menu())
+
     def pressed_btn_apply(self, message):
         """
         обрабатывает входящие текстовые сообщения от нажатия на кнопку apply.
@@ -176,14 +190,15 @@ class HandlerAllText(Handler):
         if trader_user.order_items.number_positions > 0:
             # отправляем ответ пользователю
             if not trader_user.order.has_client():
+                # check clients in db, if not then set test data
+                self.BD.check_clients()
                 self.bot.send_message(message.chat.id,
                                       'Укажите адресата доставки заказа:',
                                       reply_markup=self.keybords.set_select_client(trader=trader_user))
-                message_text = 'Выбор адресата'
+                message_text = 'Выберите клиента из списка выше и повторно нажмите оформить заказ.'
             else:
-                trader_user.order.status(status=config.Status.Work)
-                trader_user.order.save(self.BD)
-                trader_user.order_items.current_clear(self.BD)
+                trader_user.order.delivery_cost(db=self.BD)
+                self._perform_order(trader_user)
                 message_text = MESSAGES['apply'].format(trader_user.order_items.total_price(self.BD),
                                                         trader_user.order_items.number_items)
         else:
@@ -202,16 +217,26 @@ class HandlerAllText(Handler):
                 'quantity': order_item.quantity,
                 'positions': trader_user.order_items.number_positions,
                 'total_price': trader_user.order_items.total_price(self.BD)}
-        self.bot.send_message(message.chat.id,MESSAGES['order_number'].format(order_item.number), parse_mode="HTML")
+        self.bot.send_message(message.chat.id, MESSAGES['order_number'].format(order_item.number),
+                              parse_mode="HTML")
         self.bot.send_message(message.chat.id,
                               MESSAGES['order'].format(product.name,
                                                        product.title,
                                                        product.price,
                                                        order_item.quantity),
-                              parse_mode="HTML",                                          
+                              parse_mode="HTML",
                               reply_markup=self.keybords.orders_menu(step=json.dumps(step)))
 
-    # -------------------------- end of working with order form --------------------------------------
+    def _perform_order(self, trader: TraderUser):
+        """
+        perform order - clear current items, set next status Work
+        :param trader:
+        :return:
+        """
+        trader.order.status(status=config.Status.Work)
+        trader.order.save(self.BD)
+        trader.order_items.current_clear(self.BD)
+    # -------------------------- end of working with order form ------------------------------------
 
     def _get_trader_orders(self, message):
         """
@@ -221,9 +246,10 @@ class HandlerAllText(Handler):
         """
         trader_user = self._get_current_trader(message)
         orders = trader_user.get_orders(self.BD)
-        if len(orders):
+        if orders:
             msg = 'Пожалуйста, выберите заказ для работы:'
-            self.bot.send_message(message.chat.id, msg, reply_markup=self.keybords.orders_info_menu(trader_user))
+            self.bot.send_message(message.chat.id, msg,
+                                  reply_markup=self.keybords.orders_info_menu(trader_user))
         else:
             msg = 'У Вас нет заказов для работы'
             self.bot.send_message(message.chat.id, msg, reply_markup=self.keybords.start_menu())
@@ -236,7 +262,8 @@ class HandlerAllText(Handler):
         trader_id = self.BD.save_element(user)
         trader_user = TraderUser(trader_id=trader_id, user_name=message.from_user.first_name)
         trader_user.save(self.BD)
-        self.bot.send_message(message.chat.id, 'Приятной работы', reply_markup=self.keybords.start_menu())
+        self.bot.send_message(message.chat.id, 'Приятной работы',
+                              reply_markup=self.keybords.start_menu())
 
     def _get_current_trader(self, message):
         """
@@ -245,20 +272,37 @@ class HandlerAllText(Handler):
         :return: TraderUser
         """
         user = self.BD.get_user(chat_id=message.chat.id)
-        return TraderUser(user.id, message.from_user.first_name)
+        if not user is None:
+            return TraderUser(user.id, message.from_user.first_name)
+
+    def _add_admin(self, message):
+        """
+        add new user with role 'Admin'
+        :param message:
+        :return:
+        """
+        user = User(chat_id=message.chat.id, role=config.Role.Admin)
+        self.BD.save_element(user)
+        self.bot.send_message(message.chat.id, 'Приятной работы',
+                              reply_markup=self.keybords.admin_menu())
+
+    def _add_keeper(self, message):
+        """
+        add new user with role 'Keeper'
+        :param message:
+        :return:
+        """
+        user = User(chat_id=message.chat.id, role=config.Role.Keeper)
+        self.BD.save_element(user)
+        self.bot.send_message(message.chat.id, 'Приятной работы',
+                              reply_markup=self.keybords.keeper_menu())
 
     def handle(self):
-        # обработчик(декоратор) сообщений, который обрабатывает входящие текстовые сообщения от нажатия кнопок.
-        @self.bot.message_handler(func=lambda message: True)
+        """обработчик(декоратор) сообщений,
+        который обрабатывает входящие текстовые сообщения от нажатия кнопок.
+        """
+        @self.bot.message_handler(func=lambda message: message.text in config.KEYBOARD.values())
         def handle(message):
-            # ********** меню (выбор роли)                          **********
-            if message.text == config.KEYBOARD['TRADER']:
-                self._add_trader(message)
-            if message.text == config.KEYBOARD['KEEPER']:
-                pass
-            if message.text == config.KEYBOARD['ADMIN']:
-                pass
-
             # ********** меню (выбор категории, настройки, сведения)**********
             if message.text == config.KEYBOARD['CHOOSE_ORDER']:
                 self._get_trader_orders(message)
@@ -270,17 +314,17 @@ class HandlerAllText(Handler):
 
             if message.text == config.KEYBOARD['SETTINGS']:
                 self.pressed_btn_settings(message)
-  
+
             # ********** меню (категории товара, ПФ, Бакалея, Мороженое)**********
             if message.text == config.KEYBOARD['SEMIPRODUCT']:
-                self.pressed_btn_product(message,'SEMIPRODUCT')
+                self.pressed_btn_product(message, 'SEMIPRODUCT')
 
             if message.text == config.KEYBOARD['GROCERY']:
-                self.pressed_btn_product(message,'GROCERY')
+                self.pressed_btn_product(message, 'GROCERY')
 
             if message.text == config.KEYBOARD['ICE_CREAM']:
-                self.pressed_btn_product(message,'ICE_CREAM')
-            
+                self.pressed_btn_product(message, 'ICE_CREAM')
+
             if message.text == config.KEYBOARD['ORDER']:
                 self.pressed_btn_order(message)
                 # если есть заказ
@@ -295,16 +339,15 @@ class HandlerAllText(Handler):
                 self.pressed_btn_back(message)
 
             # ********** меню (Заказа)**********
-
             if message.text == config.KEYBOARD['BACK_STEP']:
                 self.pressed_btn_back_step(message)
 
             if message.text == config.KEYBOARD['NEXT_STEP']:
                 self.pressed_btn_next_step(message)
-            
+
             if message.text == config.KEYBOARD['DOWN']:
                 self.pressed_btn_down(message)
-            
+
             if message.text == config.KEYBOARD['UP']:
                 self.pressed_btn_up(message)
 
@@ -314,5 +357,57 @@ class HandlerAllText(Handler):
             if message.text == config.KEYBOARD['APPLY']:
                 self.pressed_btn_apply(message)
             # иные нажатия и ввод данных пользователем
+            # else:
+            #     self.bot.send_message(message.chat.id, message.text)
+
+        # ********** input password **********
+        @self.bot.message_handler(func=lambda message: message.text in config.DEFAULT.values())
+        def _input_password(message):
+            """
+            input password depends on choose role
+            :param message:
+            :return:
+            """
+            # ********** меню (выбор роли)                          **********
+            new_user = DefaultUser(chat_id=message.chat.id)
+            reply = 'Введите пароль'
+            if message.text == config.DEFAULT['TRADER']:
+                new_user.dialog_status = config.DialogState.UserTrader
+                # self._add_trader(message)
+            if message.text == config.DEFAULT['KEEPER']:
+                new_user.dialog_status = config.DialogState.UserKeeper
+            if message.text == config.DEFAULT['ADMIN']:
+                new_user.dialog_status = config.DialogState.UserAdmin
+                # self._add_admin(message)
+            self.bot.send_message(message.chat.id, reply)
+
+        # ********** check password **********
+        @self.bot.message_handler(func=lambda message: _dialog_password(message.chat.id))
+        def _check_password(message):
+            """
+            check password depends on user's role
+            :param message:
+            :return:
+            """
+            new_user = DefaultUser(chat_id=message.chat.id)
+            if new_user.check_password(message.text):
+                if new_user.dialog_status == config.DialogState.UserTrader:
+                    self._add_trader(message)
+                if new_user.dialog_status == config.DialogState.UserKeeper:
+                    self._add_keeper(message)
+                if new_user.dialog_status == config.DialogState.UserAdmin:
+                    self._add_admin(message)
+                new_user.dialog_status = config.DialogState.NoDialog
             else:
-                self.bot.send_message(message.chat.id, message.text)
+                self.bot.send_message(message.chat.id, 'Повторите ввод')
+
+        def _dialog_password(chat_id):
+            """
+            get status dialog from default user
+            :param chat_id:
+            :return dialog_status:
+            """
+            new_user = DefaultUser(chat_id=chat_id)
+            return new_user.dialog_status == config.DialogState.UserTrader\
+                or new_user.dialog_status == config.DialogState.UserKeeper\
+                or new_user.dialog_status == config.DialogState.UserAdmin

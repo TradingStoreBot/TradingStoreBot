@@ -11,8 +11,10 @@ from models.trader import Trader
 from settings.config import Status
 
 
-"""class for order item"""
 class OrderItem:
+    """
+    class for order item
+    """
     def __init__(self, order_spec, number, product_id, quantity=1, is_current=False, item_id=0):
         self._id = item_id
         self._order_spec = order_spec
@@ -58,8 +60,10 @@ class OrderItem:
         return "Order: {}, product id = {}, qty = {}".format(self._id, self.product_id, self.quantity)
 
 
-"""class for items of order, implements Iterator"""
 class OrderItems:
+    """
+    class for items of order, implements Iterator
+    """
     def __init__(self):
         self._orders = OrderedDict()
 
@@ -136,13 +140,15 @@ class OrderItems:
         """
         for order in self._orders.values():
             if order.is_current:
-                break
+                return order
         else:
-            product_id = list(self._orders.keys())[0]
-            order = self._orders[product_id]
-            order.is_current = True
-            order.save(db)
-        return order
+            products = list(self._orders.keys())
+            if products:
+                product_id = products[0]
+                order = self._orders[product_id]
+                order.is_current = True
+                order.save(db)
+                return order
 
     def current_next(self, db: DBManager):
         """
@@ -224,8 +230,10 @@ class OrderItems:
             order.save(db)
 
 
-"""class for order info"""
 class OrderSpec:
+    """
+    class for order info
+    """
     def __init__(self, trader_id):
         self._client = 0
         self._date = None
@@ -237,6 +245,10 @@ class OrderSpec:
         self._id = 0
 
     @property
+    def date(self):
+        return self._date
+
+    @property
     def id(self):
         return self._id
 
@@ -246,6 +258,9 @@ class OrderSpec:
 
     def has_client(self):
         return self._client > 0
+
+    def get_client(self):
+        return self._client
 
     def set_client(self, client_id):
         self._client = client_id
@@ -332,8 +347,10 @@ class OrderSpec:
         return client_distance, store_id, price_km
 
 
-"""class for Trader"""
 class TraderUser:
+    """
+    class for Trader
+    """
     def __init__(self, trader_id, user_name=''):
         self._id = trader_id
         self.order_items = OrderItems()

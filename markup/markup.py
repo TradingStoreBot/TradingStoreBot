@@ -1,8 +1,9 @@
 # импортируем специальные типы телеграм бота для создания кнопок и клавиатуры
 import json
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+from telebot.types import (InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup,
+                           KeyboardButton, ReplyKeyboardRemove)
 # импортируем настройки и утилиты
-from settings import config, utility
+from settings import config
 #  импортируем менеджер для работы с БД
 from DB.DBAlchemy import DBManager
 from models.order_trading import TraderUser
@@ -113,9 +114,9 @@ class Keyboards:
         markup for role selection
         """
         self.markup = ReplyKeyboardMarkup(True, True, row_width=1)
-        itm_btn_1 = self.set_btn('TRADER')
-        itm_btn_2 = self.set_btn('KEEPER')
-        itm_btn_3 = self.set_btn('ADMIN')
+        itm_btn_1 = KeyboardButton(config.DEFAULT['TRADER'])
+        itm_btn_2 = KeyboardButton(config.DEFAULT['KEEPER'])
+        itm_btn_3 = KeyboardButton(config.DEFAULT['ADMIN'])
         self.markup.row(itm_btn_1, itm_btn_2, itm_btn_3)
         return self.markup
 
@@ -208,4 +209,71 @@ class Keyboards:
         self.markup.row(itm_btn_5,itm_btn_6,itm_btn_7)
         self.markup.row(itm_btn_9,itm_btn_8)  
 
+        return self.markup
+
+    def admin_menu(self):
+        """
+        make admin menu
+        :return markup:
+        """
+        self.markup = ReplyKeyboardMarkup(True, True)
+        itm_btn1 = KeyboardButton(config.ADMINISTRATIVE['PROPERTY'])
+        itm_btn2 = KeyboardButton(config.ADMINISTRATIVE['STORE'])
+        self.markup.row(itm_btn1, itm_btn2)
+        return self.markup
+
+    def company_change(self):
+        """
+        keyboard for company change admin's dialog
+        :return markup:
+        """
+        self.markup = ReplyKeyboardMarkup(True, True)
+        itm_btn1 = KeyboardButton(config.ADMINISTRATIVE['PROPERTY_CHANGE'])
+        itm_btn2 = KeyboardButton(config.ADMINISTRATIVE['MAIN'])
+        self.markup.row(itm_btn1, itm_btn2)
+        return self.markup
+
+    def company_add(self):
+        """
+        keyboard for add new company admin's dialog
+        :return markup:
+        """
+        self.markup = ReplyKeyboardMarkup(True, True)
+        itm_btn1 = KeyboardButton(config.ADMINISTRATIVE['PROPERTY_ADD'])
+        itm_btn2 = KeyboardButton(config.ADMINISTRATIVE['MAIN'])
+        self.markup.row(itm_btn1, itm_btn2)
+        return self.markup
+
+    def keeper_menu(self):
+        """
+        make keeper's main menu
+        :return markup:
+        """
+        self.markup = ReplyKeyboardMarkup(True, True)
+        itm_btn1 = KeyboardButton(config.KEEPER['GET_ORDERS'])
+        self.markup.row(itm_btn1)
+        return self.markup
+
+    def keeper_orders_menu(self, keeper_id, orders, next_status):
+        """
+        create inline-buttons menu of orders with selected status
+        :param keeper_id: keeper user's chat id
+        :param orders: list of orders to work
+        :param next_status: status to set order if it will be selected
+        :return:
+        """
+        self.markup = InlineKeyboardMarkup(row_width=1)
+        for order in orders:
+            # dump a data to json string
+            # keys & values are: 'm' - menu: 's' - selected orders with
+            #                    keeper user defined status (choose one order to work with)
+            #                    'k' - keeper id
+            #                    'o' - current order id
+            #                    'n' - next status
+            data = json.dumps({'m': 's',
+                               'k': keeper_id,
+                               'o': order.id,
+                               'n': next_status},
+                              separators=(',', ':'))
+            self.markup.add(self.set_inline_btn(str(order), data))
         return self.markup
